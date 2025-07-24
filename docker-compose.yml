@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Serviço da nossa aplicação Go
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-todolist-app
+    ports:
+      - "8080:8080"
+    environment:
+      # A connection string para o nosso banco de dados.
+      # Note que o host é 'db', o nome do serviço do Postgres.
+      - DATABASE_URL=postgres://user:password@db:5432/todolist?sslmode=disable
+    depends_on:
+      - db
+    restart: on-failure
+
+  # Serviço do banco de dados PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: go-todolist-db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=todolist
+    ports:
+      # Expõe a porta do Postgres para o host, útil para debug.
+      - "5432:5432"
+    volumes:
+      # Persiste os dados do banco de dados em um volume local.
+      - postgres_data:/var/lib/postgresql/data
+      # Executa o script de criação da tabela na inicialização.
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

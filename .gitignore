@@ -1,0 +1,11 @@
+# Binários e executáveis
+go-todolist-app
+server
+
+# Arquivos de sistema
+.DS_Store
+
+# Diretórios de ferramentas
+vendor/
+
+.env
