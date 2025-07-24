@@ -1,1 +1,50 @@
 
+# Arquivo de requisições para a API de To-Do List
+# Use a extensão REST Client no VS Code para executar.
+
+# Variável para o host da API
+@host = http://localhost:8080
+
+# Variável para guardar o ID do item criado.
+# O REST Client irá capturar o valor da resposta da requisição 'createTodo'.
+@todoId = {{createTodo.response.body.id}}
+
+###
+# (1) CREATE - Cria um novo To-Do
+# @name createTodo
+POST {{host}}/todos
+Content-Type: application/json
+
+{
+  "title": "Configurar o ambiente local",
+  "description": "Adicionar suporte a .env e um arquivo requests.http"
+}
+
+###
+# (2) LIST - Lista todos os To-Dos
+GET {{host}}/todos
+Accept: application/json
+
+###
+# (3) GET BY ID - Busca um To-Do específico pelo seu ID
+# Requer que a requisição (1) CREATE tenha sido executada primeiro.
+GET {{host}}/todos/{{todoId}}
+Accept: application/json
+
+###
+# (4) UPDATE - Atualiza um To-Do existente
+# Requer que a requisição (1) CREATE tenha sido executada primeiro.
+PUT {{host}}/todos/{{todoId}}
+Content-Type: application/json
+
+{
+    "title": "Configurar o ambiente local (CONCLUÍDO)",
+    "description": "Adicionar suporte a .env e um arquivo requests.http.",
+    "completed": true
+}
+
+
+###
+# (5) DELETE - Deleta um To-Do existente
+# Requer que a requisição (1) CREATE tenha sido executada primeiro.
+DELETE {{host}}/todos/{{todoId}}
